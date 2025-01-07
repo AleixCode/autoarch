@@ -53,6 +53,8 @@ function installGraphs() {
     # Execute RiceInstaller script
     "$HOME/RiceInstaller" || error_exit "RiceInstaller execution failed"
 
+    sudo pacman -Sy
+
     # Install display server and desktop environment
     sudo pacman -S --noconfirm --needed xorg sddm || error_exit "Failed to install xorg and sddm"
     sudo pacman -S --noconfirm --needed plasma kde-applications || error_exit "Failed to install Plasma and KDE applications"
