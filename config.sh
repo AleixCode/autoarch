@@ -81,8 +81,22 @@ function grubTheme() {
     log "GRUB theme installed successfully."
 }
 
+function connectToWifi() {
+    read -p "Enter SSID: " ssid
+    read -s -p "Enter Password: " password
+    # Start iwd service
+    sudo systemctl start iwd || error_exit "Failed to start iwd service" 
+    sudo systemctl enable iwd || error_exit
+    
+    # Connect to Wi-Fi
+    sudo iwctl station wlan0 connect $ssid --passphrase "$password"
+    # Exit iwd
+    exit
+}
+
 function main() {
     log "Starting configuration process..."
+    connectToWifi
 
     checkIfNotRoot
 
