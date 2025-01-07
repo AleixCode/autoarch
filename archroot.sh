@@ -4,6 +4,10 @@ set -e  # Exit immediately if a command fails
 set -u  # Treat unset variables as an error
 set -o pipefail  # Fail pipeline if any command fails
 
+log() {
+    echo "[LOG] $1"
+}
+
 error_exit() {
     echo "[ERROR] $1" >&2
     exit 1
