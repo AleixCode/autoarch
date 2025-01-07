@@ -136,7 +136,7 @@ function main() {
     pauseForMounting
     setUpInitramfs
     updatePackageManager
-    installDependencies sudo visudo grub efibootmgr dosfstools os-prober mtools kitty firefox
+    installDependencies sudo grub efibootmgr dosfstools os-prober mtools kitty firefox
     setTimeZone
     setUpHostname
     setUpLanguage
