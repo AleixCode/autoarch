@@ -75,7 +75,8 @@ installEssentials() {
 
 enterArch() {
     curl -Lo /mnt/archroot.sh https://raw.githubusercontent.com/AleixCode/autoarch/refs/heads/main/archroot.sh
-    chmod +x /mnt/archroot.sh
+    curl -Lo /mnt/config.sh https://raw.githubusercontent.com/AleixCode/autoarch/refs/heads/main/config.sh
+    chmod +x /mnt/archroot.sh /mnt/config.sh 
     arch-chroot /mnt /archroot.sh
 }
 
