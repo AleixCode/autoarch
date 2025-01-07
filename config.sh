@@ -82,6 +82,10 @@ function grubTheme() {
 }
 
 function connectToWifi() {
+    
+    echo -e "[General]\nEnableNetworkConfiguration=true" | sudo tee /etc/iwd/main.conf > /dev/null
+    sudo systemctl restart iwd
+
     read -p "Enter SSID: " ssid
     read -s -p "Enter Password: " password
     # Start iwd service
