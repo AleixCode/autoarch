@@ -13,6 +13,28 @@ error_exit() {
     exit 1
 }
 
+#!/bin/bash
+
+# Function to pause the script and wait for user input
+function pause_and_tmux() {
+    echo "Press Enter to continue..."
+    read -r
+
+    # Create a new tmux session and attach to it
+    tmux new-session -d -s my_session
+    tmux attach-session -t my_session
+
+    # Wait for the user to finish their work in the tmux session
+    while tmux has-session -t my_session 2>/dev/null; do
+        sleep 1
+    done
+
+    # After the tmux session is closed, ask for input in the main terminal
+    echo "Please enter your input to continue: "
+    read -r user_input
+}
+
+
 function InstallPackage() {
    log "Installing package: $1"
    pacman -S --noconfirm --needed "$1" || error_exit "Failed to install $1"
@@ -30,16 +52,8 @@ function updateDependences() {
 }
 
 pauseForPartitioning() {
-    while true; do
-        echo "Please partition and mount your drives manually. Use tmux to manage sessions if needed."
-        echo "Tmux commands:
- - Start a new session: Ctrl-b then c
- - Switch sessions: Ctrl-b then s
- - Detach session: Ctrl-b then d
- - Reattach session: tmux attach-session -t <session-name>"
-        read -p "Press Enter to continue only after completing partitioning and mounting..." input
-        [[ -z "$input" ]] && break
-    done
+    echo "Please partition and mount your drives manually. Use tmux to manage sessions if needed."
+    pause_and_tmux
 }
 
 generateFstab() {
@@ -62,11 +76,8 @@ installEssentials() {
 }
 
 pauseForMounting() {
-    while true; do
-        echo "Please mount EFI partition in /boot/EFI. Use tmux if needed."
-        read -p "Press Enter to continue only after mounting..." input
-        [[ -z "$input" ]] && break
-    done
+    echo "Please mount EFI partition in /boot/EFI. Use tmux if needed."
+    pause_and_tmux
 }
 
 setUpInitramfs() {
@@ -151,6 +162,10 @@ setUpNetwork() {
 
 updateSystemFiles() {
     updatedb || error_exit "Failed to update system files"
+}
+
+enterArch() {
+    arch-chroot /mnt 
 }
 
 main() {
