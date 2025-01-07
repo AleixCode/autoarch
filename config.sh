@@ -86,10 +86,13 @@ function connectToWifi() {
     read -s -p "Enter Password: " password
     # Start iwd service
     sudo systemctl start iwd || error_exit "Failed to start iwd service" 
-    sudo systemctl enable iwd || error_exit
+    sudo systemctl enable iwd || error_exit "Failed to start iwd service2" 
     
     # Connect to Wi-Fi
-    sudo iwctl station wlan0 connect $ssid --passphrase "$password"
+    sudo iwctl station wlan0 connect $ssid --passphrase "$password" || error_exit "Failed to connect to the network" 
+
+    #sudo dhclient wlan0 || error_exit "Failed to get dhcp" 
+
     # Exit iwd
     exit
 }
