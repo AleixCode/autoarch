@@ -13,9 +13,7 @@ error_exit() {
     exit 1
 }
 
-#!/bin/bash
 
-# Function to pause the script and wait for user input
 function pause_and_tmux() {
     echo "Press Enter to continue..."
     read -r
@@ -75,97 +73,10 @@ installEssentials() {
    pacstrap /mnt linux linux-headers linux-firmware base networkmanager grub wpa_supplicant base base-devel || error_exit "Failed to install essential packages"
 }
 
-pauseForMounting() {
-    echo "Please mount EFI partition in /boot/EFI. Use tmux if needed."
-    pause_and_tmux
-}
-
-setUpInitramfs() {
-   log "Setting up initramfs"
-   mkinitcpio -P || error_exit "Failed to generate initramfs"
-}
-
-updatePackageManager() {
-    log "Updating package manager"
-    pacman -Syu || error_exit "Failed to update package manager"
-}
-
-installDependencies() {
-    log "Installing dependencies"
-    for pkg in "$@"; do
-        InstallPackage "$pkg"
-    done
-}
-
-setTimeZone() {
-   log "Setting up timezone"
-   ln -sf "/usr/share/zoneinfo/Europe/Madrid" "/etc/localtime" || error_exit "Failed to set timezone"
-}
-
-setUpHostname() {
-   log "Setting up hostname"
-   echo "theMachine" > "/etc/hostname"
-}
-
-setUpLanguage() {
-   log "Setting up language"
-   echo "LANG=en_US.UTF-8" > "/etc/locale.conf"
-}
-
-setUpKeyboardLayout() {
-   log "Setting up keyboard layout"
-   sed -i '/en_US.UTF-8 UTF-8/s/^#//' "/etc/locale.gen" || error_exit "Failed to configure locale"
-   sed -i '/es_ES.UTF-8 UTF-8/s/^#//' "/etc/locale.gen"
-   locale-gen || error_exit "Failed to generate locale"
-   echo "KEYMAP=es" > "/etc/vconsole.conf"
-}
-
-installAndSetUpSudo() {
-   log "Setting up sudo"
-   cp /etc/sudoers /tmp/sudoers.tmp || error_exit "Failed to copy sudoers file"
-   grep -qxF '%wheel ALL=(ALL:ALL) ALL' /tmp/sudoers.tmp || echo "%wheel ALL=(ALL:ALL) ALL" >> /tmp/sudoers.tmp
-   visudo -c -f /tmp/sudoers.tmp || error_exit "Invalid sudoers configuration"
-   cp /tmp/sudoers.tmp /etc/sudoers || error_exit "Failed to replace sudoers file"
-}
-
-setUpRoot() {
-   log "Setting up root password"
-   passwd || error_exit "Failed to set root password"
-}
-
-createUser() {
-   log "Creating user $1"
-   useradd -m -G wheel "$1" || error_exit "Failed to create user $1"
-   passwd "$1" || error_exit "Failed to set password for $1"
-}
-
-setUpUsers() {
-   while true; do
-      read -p "Create a new User? [Y/n]: " answer
-      [[ "$answer" =~ ^[nN]$ ]] && break
-      read -p "Enter username: " name
-      createUser "$name"
-   done
-}
-
-setUpGRUB() {
-   log "Setting up GRUB"
-   InstallPackage grub efibootmgr dosfstools os-prober mtools
-   grub-install --target=x86_64-efi --bootloader-id=grub_uefi --recheck || error_exit "Failed to install GRUB"
-   grub-mkconfig -o /boot/grub/grub.cfg || error_exit "Failed to generate GRUB config"
-}
-
-setUpNetwork() {
-   log "Setting up network"
-   systemctl enable --now NetworkManager || error_exit "Failed to enable NetworkManager"
-}
-
-updateSystemFiles() {
-    updatedb || error_exit "Failed to update system files"
-}
-
 enterArch() {
-    arch-chroot /mnt 
+    curl -Lo /mnt/archroot.sh https://raw.githubusercontent.com/AleixCode/autoarch/refs/heads/main/archroot.sh
+    chmod +x archroot.sh
+    arch-chroot /mnt /archroot.sh
 }
 
 main() {
@@ -181,22 +92,7 @@ main() {
     installPackman
     installEssentials
 
-    arch-chroot /mnt <<EOF
-    pauseForMounting
-    setUpInitramfs
-    updatePackageManager
-    installDependencies sudo visudo grub efibootmgr dosfstools os-prober mtools kitty firefox
-    setTimeZone
-    setUpHostname
-    setUpLanguage
-    setUpKeyboardLayout
-    installAndSetUpSudo
-    setUpRoot
-    setUpUsers
-    setUpGRUB
-    setUpNetwork
-    updateSystemFiles
-EOF
+    enterArch
 }
 
 main
