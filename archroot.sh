@@ -146,3 +146,5 @@ function main() {
     setUpNetwork
     updateSystemFiles
 }
+
+main
