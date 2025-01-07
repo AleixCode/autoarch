@@ -42,6 +42,8 @@ function InstallPackage() {
 
 pauseForMounting() {
     echo "Please mount EFI partition in /boot/EFI. Use tmux if needed."
+    echo 'mkdir -p "/boot/EFI"'
+    echo 'mount "${device}1" "/boot/EFI"'
     pause_and_tmux
 }
 
