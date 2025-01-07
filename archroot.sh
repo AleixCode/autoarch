@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/bash -x
+echo "[LOG] Something is happening..." >&2
+
 
 set -e  # Exit immediately if a command fails
 set -u  # Treat unset variables as an error
