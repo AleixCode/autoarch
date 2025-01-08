@@ -77,7 +77,7 @@ enterArch() {
     curl -Lo /mnt/archroot.sh https://raw.githubusercontent.com/AleixCode/autoarch/refs/heads/main/archroot.sh
     curl -Lo /mnt/config.sh https://raw.githubusercontent.com/AleixCode/autoarch/refs/heads/main/config.sh
     chmod +x /mnt/archroot.sh /mnt/config.sh 
-    sudo arch-chroot /mnt pacman -S tmux
+    sudo arch-chroot /mnt pacman -S tmux iwd dhcp vim
     arch-chroot /mnt /archroot.sh
 }
 
