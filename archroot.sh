@@ -145,8 +145,6 @@ function main() {
     setUpRoot
     setUpUsers
     setUpGRUB
-    setUpNetwork
-    updateSystemFiles
 }
 
 main
