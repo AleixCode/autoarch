@@ -126,6 +126,7 @@ function main() {
 
     # Set keyboard layout
     log "Setting keyboard layout to 'es'."
+    localectl set-x11-keymap es || error_exit "Failed to set keyboard layout x11"
     localectl set-keymap es || error_exit "Failed to set keyboard layout"
 
     # Install GRUB theme
