@@ -104,10 +104,10 @@ function connectToWifi() {
 }
 
 function main() {
+    checkIfNotRoot
+
     log "Starting configuration process..."
     connectToWifi
-
-    checkIfNotRoot
 
     # Create Repos directory
     mkdir -p "$HOME/Repos" || error_exit "Failed to create Repos directory"
