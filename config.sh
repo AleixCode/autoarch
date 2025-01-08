@@ -99,6 +99,9 @@ function connectToWifi() {
     # Connect to Wi-Fi
     sudo iwctl station wlan0 connect $ssid --passphrase "$password" || error_exit "Failed to connect to the network" 
 
+    echo -e "nameserver 8.8.8.8\nnameserver 8.8.4.4" | sudo tee /etc/resolv.conf > /dev/null
+
+
     #sudo dhclient wlan0 || error_exit "Failed to get dhcp" 
 
     # Exit iwd
