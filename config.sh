@@ -84,6 +84,8 @@ function grubTheme() {
 }
 
 function connectToWifi() {
+
+    sudo mkdir -p /etc/iwd
     
     echo -e "[General]\nEnableNetworkConfiguration=true" | sudo tee /etc/iwd/main.conf > /dev/null
     sudo systemctl restart iwd
