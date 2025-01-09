@@ -108,6 +108,18 @@ function connectToWifi() {
     exit
 }
 
+restart() {
+    # Prompt to restart
+    read -p "Do you want to restart the system now? (yes/no): " restart_choice
+    if [[ "$restart_choice" == "no" || "$restart_choice" == "n" ]]; then
+        echo "Restart aborted. Please remember to restart your system later."
+    else
+        sudo reboot
+    fi
+
+}
+
+
 function main() {
     checkIfNotRoot
 
@@ -133,6 +145,7 @@ function main() {
     grubTheme
 
     log "Configuration completed successfully!"
+    restart
 }
 
 main
