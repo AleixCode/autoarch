@@ -131,6 +131,17 @@ updateSystemFiles() {
     updatedb || error_exit "Failed to update system files"
 }
 
+restart() {
+    # Prompt to restart
+    read -p "Do you want to restart the system now? (yes/no): " restart_choice
+    if [[ "$restart_choice" == "no" || "$restart_choice" == "n" ]]; then
+        echo "Restart aborted. Please remember to restart your system later."
+    else
+        sudo reboot
+    fi
+
+}
+
 
 function main() {
     pauseForMounting
@@ -145,6 +156,7 @@ function main() {
     setUpRoot
     setUpUsers
     setUpGRUB
+    restart
 }
 
 main
